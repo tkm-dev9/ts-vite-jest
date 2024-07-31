@@ -1,5 +1,5 @@
 const config = {
   preset: 'ts-jest',
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: './FixJSDOMEnvironment.ts',
 };
 export default config;

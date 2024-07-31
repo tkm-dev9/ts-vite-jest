@@ -76,4 +76,31 @@ test("compile android goes as expected", () => {
   expect(() => compileAndroidCode()).toThrow("you are using the wrong JDK");
   expect(() => compileAndroidCode()).toThrow(/JDK/);
   expect(() => compileAndroidCode()).toThrow(/^you are using the wrong JDK!$/);
-})
+});
+
+const fetchData = (): Promise<string> => {
+  return fetch("https://jsonplaceholder.typicode.com/posts/1")
+    .then((res: Response) => res.json())
+    .then((data: unknown) => {
+      const post = data as Post;
+      return post.title;
+    })
+}
+
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+test("test data match", () => {
+  return fetchData().then(data => {
+    expect(data).toContain("provident");
+  });
+});
+
+test("test data match", async () => {
+  const data = await fetchData();
+  expect(data).toContain("provident");
+});
