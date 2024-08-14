@@ -8,7 +8,24 @@
   </head>
   <body>
     <!-- <div id="app"></div> -->
-    <input type="text" id="calendar" placeholder="日時を選択してください">
+
+    <div>
+      <button id="7daysBtn">7日</button>
+      <button id="14daysBtn">14日</button>
+      <button id="21daysBtn">21日</button>
+      <p id="selectDay"></p>
+    </div>
+
+    <div>
+      <label>開始日
+        <input type="text" id="startDay" placeholder="日時を選択してください">
+      </label>
+    </div>
+    <div>
+      <label>終了日</label>
+      <input type="text" id="endDay" disabled>
+    </div>
+
     <!-- <script type="module" src="/src/main.ts"></script> -->
     <!-- <script type="module" src="/src/day.ts"></script>
     <script type="module" src="/src/date-fns.ts"></script> -->
