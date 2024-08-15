@@ -5,8 +5,8 @@ const btn_7days = document.getElementById("7daysBtn");
 const btn_14days = document.getElementById("14daysBtn");
 const btn_21days = document.getElementById("21daysBtn");
 const selectDay = document.getElementById("selectDay");
-const startDay = document.getElementById("startDay");
-const endDay = document.getElementById("endDay");
+const startDay = document.getElementById("startDay") as HTMLInputElement | null;
+const endDay = document.getElementById("endDay") as HTMLInputElement | null;
 
 let selectPeriodDay: number = 0;
 let selectStartDate: Date | null = null;
@@ -25,26 +25,24 @@ periodButtons.forEach(button => {
   });
 });
 
-const fp = flatpickr(startDay!, {
-  dateFormat: "Y-m-d H:i",
-  onChange: handleDateChange,
-  onOpen: function (selectedDates, dateStr, instance) {
-    console.warn({ selectedDates, dateStr, instance });
-  },
-  onClose: function (selectedDates, dateStr, instance) {
-    console.warn({ selectedDates, dateStr, instance });
-  }
-});
+if (startDay) {
+  flatpickr(startDay, {
+    dateFormat: "Y-m-d H:i",
+    onChange: handleDateChange,
+  }); 
+}
 
-function handleDateChange(selectedDates: Date[], dateStr: string) {
+function handleDateChange(_selectedDates: Date[], dateStr: string) {
   selectStartDate = new Date(dateStr);
   calcEndDayAndSet();
 }
 
 function calcEndDayAndSet() {
-  selectStartDate?.setDate(selectStartDate?.getDate() + selectPeriodDay);
-  const calcEndDayStr = formatDateString(selectStartDate!);
-  (endDay as HTMLInputElement).value = calcEndDayStr;
+  if (selectStartDate) {
+    selectStartDate?.setDate(selectStartDate?.getDate() + selectPeriodDay);
+    const calcEndDayStr = formatDateString(selectStartDate); 
+    if(endDay) endDay.value = calcEndDayStr;
+  }
 }
 
 function formatDateString(date: Date) {
