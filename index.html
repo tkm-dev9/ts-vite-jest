@@ -5,9 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
+    <script src="https://applepay.cdn-apple.com/jsapi/v1.1.0/apple-pay-sdk.js"></script>
+    <style>
+      apple-pay-button {
+      --apple-pay-button-width: 140px;
+      --apple-pay-button-height: 30px;
+      --apple-pay-button-border-radius: 5px;
+      --apple-pay-button-padding: 5px 0px;
+    }
+    </style>
   </head>
   <body>
-    <!-- <div id="app"></div> -->
+  <!-- <div id="app"></div> -->
+  <apple-pay-button buttonstyle="black" type="buy" locale="el-GR"></apple-pay-button>
 
     <div>
       <button id="7daysBtn">7日</button>
@@ -25,10 +35,18 @@
       <label>終了日</label>
       <input type="text" id="endDay" disabled>
     </div>
-
+    
     <!-- <script type="module" src="/src/main.ts"></script> -->
     <!-- <script type="module" src="/src/day.ts"></script>
     <script type="module" src="/src/date-fns.ts"></script> -->
     <script type="module" src="/src/flatpickr.ts"></script>
+    <script>
+      if (window.ApplePaySession) {
+        //Mac is safari only
+        console.warn("Apple Pay is available");
+      }else {
+        console.warn("Apple Pay is not available");
+      }
+    </script>
   </body>
 </html>
