@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
     <script src="https://applepay.cdn-apple.com/jsapi/v1.1.0/apple-pay-sdk.js"></script>
+    <script async src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()">
+    </script>
+
     <style>
       apple-pay-button {
       --apple-pay-button-width: 140px;
@@ -18,6 +21,7 @@
   <body>
   <!-- <div id="app"></div> -->
   <apple-pay-button buttonstyle="black" type="buy" locale="el-GR"></apple-pay-button>
+  <div id="googlePayBtnContainer"></div>
 
     <div>
       <button id="7daysBtn">7日</button>
@@ -46,6 +50,86 @@
         console.warn("Apple Pay is available");
       }else {
         console.warn("Apple Pay is not available");
+      }
+    </script>
+    <script>
+      //Google Pay API のバージョンを定義する
+      const baseRequest = {
+        apiVersion: 2,
+        apiVersionMinor: 0
+      };
+      let paymentsClient = null;
+
+      //決済機関にお支払いトークンをリクエストする
+      const tokenizationSpecification = {
+        type: 'PAYMENT_GATEWAY',
+        parameters: {
+          "gateway": "stripe",
+          "stripe:version": "2018-10-31",
+          "stripe:publishableKey": "",
+        }
+      };
+
+      //サポートされている支払いカード ネットワークを定義する
+      const allowedCardAuthMethods = ["PAN_ONLY"];
+
+      const allowedCardNetworks = ["AMEX", "JCB", "MASTERCARD", "VISA"] ;
+
+      //許可された支払い方法を記述する
+      const baseCardPaymentMethod = {
+        type: 'CARD',
+        parameters: {
+          allowedAuthMethods: allowedCardAuthMethods,
+          allowedCardNetworks: allowedCardNetworks
+        }
+      };
+
+      const cardPaymentMethod = Object.assign(
+        { tokenizationSpecification: tokenizationSpecification },
+        baseCardPaymentMethod
+      );
+
+      //Google Pay API JavaScript ライブラリを読み込む
+      function getGooglePaymentsClient() {
+        if (paymentsClient === null) {
+          paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+        }
+        return paymentsClient;
+      }
+
+      //Google Pay API での支払いが可能かどうかを確認する
+      function getGoogleIsReadyToPayRequest() {
+        return Object.assign(
+          {},
+          baseRequest,
+          {
+            allowedPaymentMethods: [baseCardPaymentMethod]
+          }
+        );
+      }
+
+      function onGooglePayLoaded() {
+        const paymentsClient = getGooglePaymentsClient();
+        paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
+        .then(function (response) {
+          if (response.result) {
+            addGooglePayButton();
+          }
+        })
+        .catch(function (err) {
+          // show error in developer console for debugging
+          console.error(err);
+        });  
+      }
+
+      function addGooglePayButton() {
+        //Google Pay 支払いボタンを追加する
+        const paymentsClient = getGooglePaymentsClient();
+        const button = paymentsClient.createButton({
+          onClick: () => console.log('TODO: click handler'),
+          allowedPaymentMethods: []
+        });
+        document.getElementById('googlePayBtnContainer').appendChild(button);
       }
     </script>
   </body>
